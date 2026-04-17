@@ -3,7 +3,6 @@
 //pour faire des requêtes asynchrones/await
 
 const mysql = require("mysql2/promise");
-require("dotenv").config();
 
 //pool de connexion qui permet de gérer plusieurs connexions simultanées, réutiliser des connexions existantes
 //permet aussi une gestion auto de la disponibilité et limiter le nb de connexions (en même temps)
