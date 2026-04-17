@@ -3,8 +3,7 @@ const { getAllTasks, getTaskByID } = require("../Models/Task");
 const { isProjectManager } = require("../Models/Role");
 
 //LE MODÈLE ENVOIE DES DONNEES ICI ET LE CONTROLLER LES ENVOIENT A L'UTILISATEUR
-
-//créer une tâche
+// Créer une tâche
 const { createTask } = require("../Models/Task");
 
 const create = async (req, res) => {
@@ -75,7 +74,7 @@ const create = async (req, res) => {
   }
 };
 
-//récupérer tous les produits
+// Récupérer toutes les tâches
 
 const getAll = async (req, res) => {
   try {
@@ -93,10 +92,10 @@ const getAll = async (req, res) => {
   }
 };
 
-//Récupérer une tâche par son ID
+// Récupérer une tâche par son ID
 const getByID = async (req, res) => {
   try {
-    const { id } = req.params; //ou on peut aussi faire const id = req.params.id; mais cela ne prendra qu'un parametre
+    const { id } = req.params;
     const taskId = parseInt(id);
     const tasks = await getTaskByID(taskId);
     if (tasks.length === 0) {

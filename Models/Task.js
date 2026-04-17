@@ -1,4 +1,4 @@
-//MODEL PRODUITS
+//MODEL TACHES
 const db = require("../db");
 
 //fonction pour créer une tâche
@@ -69,13 +69,13 @@ const getAllTasks = async () => {
 const getTaskByID = async (id) => {
   const [result] = await db.query("SELECT * FROM tâches WHERE id_task = ?", [
     id,
-  ]); //VOIR REQUETE PREPAREE (ULTRA IMPORTANT POUR LA SECURITE)
+  ]);
   return result;
 };
 
 //pour supprimer une tâche
 const delTask = async (id) => {
-  const [result] = await db.query("DELETE FROM tâches WHERE id_task = ?", [id]); //VOIR REQUETE PREPAREE (ULTRA IMPORTANT POUR LA SECURITE)
+  const [result] = await db.query("DELETE FROM tâches WHERE id_task = ?", [id]);
   return result;
 };
 

@@ -7,22 +7,21 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./Endpoints/authRoutes"); // Vérifie bien le chemin du dossier
 const taskRoutes = require("./Endpoints/taskRoutes"); // On suppose que c'est le nom du fichier
 
-//connx a la BDD
+// Connx a la BDD
 const db = require("./db");
 
-//importation des routes
-
+// Importation des routes
 // Créa de l'application Express
 const app = express();
 
-//Middlewares
-//Parser les JSON
+// Middlewares
+// Parser les JSON
 app.use(express.json());
 
-//Logger de requête HTTP dans la console (a commenter au passage en ligne)
+// Logger de requête HTTP dans la console (a commenter au passage en ligne)
 app.use(morgan("dev"));
 
-//Cors permet les requêtes cross-origines (entre front et bdd)
+// Cors permet les requêtes cross-origines (entre front et bdd)
 // Cross Origin Ressource Sharing (CORS) - Obligatoire sinon le navigateur bloque les requetes
 const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
 
@@ -35,12 +34,12 @@ app.use(
   }),
 );
 
-//Parser les cookies dans req
+// Parser les cookies dans req
 app.use(cookieParser());
 
-//ROUTES
+// ROUTES
 
-//Route de test pour verif' que l'API fonctionne
+// Route de test pour verif' que l'API fonctionne
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
@@ -48,20 +47,20 @@ app.get("/health", (req, res) => {
   });
 });
 
-//Routes de l'API
+// Routes de l'API
 app.use("/api/users", authRoutes);
 app.use("/api/taches", taskRoutes); // On évite l'accent pour être plus "safe"
 
-//Gestion des erreurs
+// Gestion des erreurs
 
-//Route 404
+// Route 404
 app.use((req, res) => {
   res.status(404).json({
     message: "Route non trouvée",
   });
 });
 
-//Démarrage du serveur
+// Démarrage du serveur
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";
 

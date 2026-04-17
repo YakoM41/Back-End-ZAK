@@ -37,7 +37,7 @@ const verifyToken = (req, res, next) => {
       });
     }
 
-    //Token valide : on ajoute les infos du client à la requête
+    //Token valide : on ajoute les infos de l'utilisateur à la requête
 
     req.user = decoded;
     next();

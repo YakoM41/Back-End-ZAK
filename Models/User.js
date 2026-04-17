@@ -2,7 +2,7 @@
 const db = require("../db");
 const bcrypt = require("bcryptjs");
 
-// Rechercher un client par son ID
+// Rechercher un utilisateur par son ID
 const findUserById = async (id) => {
   const [rows] = await db.query(
     "SELECT * FROM utilisateurs WHERE id_user = ?",
@@ -11,7 +11,7 @@ const findUserById = async (id) => {
   return rows;
 };
 
-//RECHERCHER UN CLIENT PAR EMAIL
+//RECHERCHER UN utilisateur PAR EMAIL
 const findUserByEmail = async (email) => {
   const [rows] = await db.query(
     "SELECT * FROM utilisateurs WHERE user_email = ?",
@@ -20,7 +20,7 @@ const findUserByEmail = async (email) => {
   return rows;
 };
 
-//CRÉER UN NOUVEAU CLIENT
+//CRÉER UN NOUVEL utilisateur
 const createUser = async (userData) => {
   const { Nom, Prenom, email, Mot_de_passe } = userData;
 
@@ -35,7 +35,7 @@ const createUser = async (userData) => {
 
 const hashPassword = async (password) => {
   const rounds = parseInt(process.env.BCRYPT_ROUNDS || 10);
-  return await bcrypt.hash(password, rounds); // on peut aussi écrire en 1 fois : return await bcrypt.hash(password,parseInt(process.env.BCRYPT_ROUNDS || 10);
+  return await bcrypt.hash(password, rounds);
 };
 
 //Comparer un MDP
