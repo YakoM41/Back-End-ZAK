@@ -7,6 +7,7 @@ require("dotenv").config();
 
 //pool de connexion qui permet de gérer plusieurs connexions simultanées, réutiliser des connexions existantes
 //permet aussi une gestion auto de la disponibilité et limiter le nb de connexions (en même temps)
+console.log("Nom de la DB chargé :", process.env.DB_NAME);
 const db = mysql.createPool({
   //PARAMÈTRES DE CONNEXION (host, nom utilisateur, MdP, nom de la BDD)
   host: process.env.DB_HOST,

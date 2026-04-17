@@ -1,5 +1,6 @@
 // CONTROLLER PRODUITS
 const { getAllTasks, getTaskByID } = require("../Models/Task");
+const { isProjectManager } = require("../Models/Role");
 
 //LE MODÈLE ENVOIE DES DONNEES ICI ET LE CONTROLLER LES ENVOIENT A L'UTILISATEUR
 
@@ -7,18 +8,35 @@ const { getAllTasks, getTaskByID } = require("../Models/Task");
 const { createTask } = require("../Models/Task");
 
 const create = async (req, res) => {
+  // On extrait les données
+  const {
+    title,
+    description,
+    pos,
+    due_date,
+    planned,
+    reel,
+    col_id,
+    project_id,
+  } = req.body;
+  const userId = req.user.id;
   try {
-    // On extrait les données du corps de la requête
-    const {
-      title,
-      description,
-      pos,
-      due_date,
-      planned,
-      reel,
-      col_id,
-      project_id,
-    } = req.body;
+    // On vérifie si elles sont présentes
+    if (!title || !col_id || !project_id) {
+      return res.status(400).json({
+        message:
+          "Erreur : Le titre, la colonne et le projet sont obligatoires.",
+      });
+    }
+
+    const isManager = await isProjectManager(userId, project_id);
+
+    if (!isManager) {
+      return res.status(403).json({
+        message:
+          "Accès refusé : Seul le chef de projet peut ajouter une tâche.",
+      });
+    }
 
     // Appel du modèle
     const result = await createTask({
@@ -98,4 +116,4 @@ const getByID = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getByID };
+module.exports = { getAll, getByID, create };

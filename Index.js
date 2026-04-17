@@ -4,6 +4,9 @@ const morgan = require("morgan");
 require("dotenv").config(); // permet de charger les var d'env depuis .env
 const cookieParser = require("cookie-parser");
 
+const authRoutes = require("./Endpoints/authRoutes"); // Vérifie bien le chemin du dossier
+const taskRoutes = require("./Endpoints/taskRoutes"); // On suppose que c'est le nom du fichier
+
 //connx a la BDD
 const db = require("./db");
 
@@ -46,6 +49,8 @@ app.get("/health", (req, res) => {
 });
 
 //Routes de l'API
+app.use("/api/users", authRoutes);
+app.use("/api/taches", taskRoutes); // On évite l'accent pour être plus "safe"
 
 //Gestion des erreurs
 
