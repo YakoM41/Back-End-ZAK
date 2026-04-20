@@ -33,7 +33,7 @@ const getProjectById = async (req, res) => {
 // Crée un nouveau projet
 const createProject = async (req, res) => {
   try {
-    const { project_name, project_description } = req.body;
+    const { project_name, project_desc } = req.body;
 
     if (!project_name) {
       return res
@@ -43,7 +43,7 @@ const createProject = async (req, res) => {
 
     const projectId = await projectModel.createProject(
       project_name,
-      project_description,
+      project_desc,
     );
     res
       .status(201)
@@ -60,18 +60,18 @@ const createProject = async (req, res) => {
 const updateProject = async (req, res) => {
   try {
     const { id_project } = req.params;
-    const { project_name, project_description } = req.body;
+    const { project_name, project_desc } = req.body;
 
-    if (!project_name && !project_description) {
+    if (!project_name && !project_desc) {
       return res.status(400).json({
         message:
-          "Au moins un champ ('project_name' ou 'project_description') est requis.",
+          "Au moins un champ ('project_name' ou 'project_desc') est requis.",
       });
     }
 
     const fields = {};
     if (project_name) fields.project_name = project_name;
-    if (project_description) fields.project_description = project_description;
+    if (project_desc) fields.project_desc = project_desc;
 
     await projectModel.updateProject(id_project, fields);
     res.status(200).json({ message: "Projet mis à jour avec succès." });

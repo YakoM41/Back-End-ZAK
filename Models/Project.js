@@ -1,15 +1,15 @@
-const db = require("../../db");
+const db = require("../db");
 
 // Crée un nouveau projet dans la base de données
-const createProject = async (project_name, project_description) => {
+const createProject = async (project_name, project_desc) => {
   let connection;
   try {
     connection = await db.getConnection();
     await connection.beginTransaction();
 
     const [result] = await connection.execute(
-      "INSERT INTO projects (project_name, project_description) VALUES (?, ?)",
-      [project_name, project_description],
+      "INSERT INTO projets (project_name, project_desc) VALUES (?, ?)",
+      [project_name, project_desc],
     );
 
     const projectId = result.insertId;
@@ -28,7 +28,7 @@ const createProject = async (project_name, project_description) => {
 // Récupère tous les projets
 const getProjects = async () => {
   try {
-    const [rows] = await db.query("SELECT * FROM projects");
+    const [rows] = await db.query("SELECT * FROM projets");
     return rows;
   } catch (error) {
     console.error("ERREUR SQL DÉTAILLÉE DANS GETPROJECTS:", error.message);
@@ -39,7 +39,7 @@ const getProjects = async () => {
 // Récupère un projet par son ID
 const getProjectById = async (id_project) => {
   try {
-    const [rows] = await db.query("SELECT * FROM projects WHERE id_project = ?", [
+    const [rows] = await db.query("SELECT * FROM projets WHERE id_project = ?", [
       id_project,
     ]);
     return rows[0]; // Retourne le premier projet trouvé ou undefined
@@ -56,7 +56,7 @@ const updateProject = async (id_project, fields) => {
     connection = await db.getConnection();
     await connection.beginTransaction();
 
-    const allowed = ["project_name", "project_description"];
+    const allowed = ["project_name", "project_desc"];
     const updates = Object.keys(fields)
       .filter((key) => allowed.includes(key))
       .map((key) => `${key} = ?`);
@@ -69,7 +69,7 @@ const updateProject = async (id_project, fields) => {
       .map((key) => fields[key]);
 
     await connection.execute(
-      `UPDATE projects SET ${updates.join(", ")} WHERE id_project = ?`,
+      `UPDATE projets SET ${updates.join(", ")} WHERE id_project = ?`,
       [...values, id_project],
     );
 
@@ -91,7 +91,7 @@ const deleteProject = async (id_project) => {
     connection = await db.getConnection();
     await connection.beginTransaction();
 
-    await connection.execute("DELETE FROM projects WHERE id_project = ?", [
+    await connection.execute("DELETE FROM projets WHERE id_project = ?", [
       id_project,
     ]);
 
