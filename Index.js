@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./Endpoints/authRoutes");
 const taskRoutes = require("./Endpoints/taskRoutes");
+const projectRoutes = require("./Endpoints/projectRoutes");
+const columnRoutes = require("./Endpoints/columnRoutes");
 
 // Connx a la BDD
 const db = require("./db");
@@ -50,6 +52,8 @@ app.get("/health", (req, res) => {
 // Routes de l'API
 app.use("/api/users", authRoutes);
 app.use("/api/taches", taskRoutes); // On évite l'accent pour être plus "safe"
+app.use("/api", projectRoutes);
+app.use("/api", columnRoutes);
 
 // Gestion des erreurs
 

@@ -1,5 +1,5 @@
 // Importe la configuration de la base de données
-const db = require("../../db");
+const db = require("../db");
 
 // Crée une nouvelle colonne dans la base de données
 const createColumn = async (id_project, col_title, col_pos) => {
