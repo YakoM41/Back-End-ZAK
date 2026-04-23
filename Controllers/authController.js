@@ -65,29 +65,37 @@ const login = async (req, res) => {
   try {
     const { email, Mot_de_passe } = req.body;
 
-    // Rechercher le client
+    console.log("--- Tentative de connexion ---");
+    console.log("Payload reçu (req.body):", req.body);
+    console.log("Mot de passe en clair reçu:", Mot_de_passe);
 
     const users = await findUserByEmail(email);
+
     if (users.length === 0) {
+      console.log("Utilisateur non trouvé pour l'email:", email);
       return res.status(401).json({
         message: 'Identifiants incorrects',
       });
     }
 
     const user = users[0];
+    console.log("Utilisateur trouvé:", user);
+    console.log("Hash de la BDD (user.user_password):", user.user_password);
 
-    // Vérifier le MDP
-
+    // La ligne suivante est la source la plus probable de l'erreur 500
     const isMatch = await comparePassword(Mot_de_passe, user.user_password);
+    
+    console.log("Résultat de la comparaison (isMatch):", isMatch); // N'apparaîtra pas si l'erreur se produit avant
 
     if (!isMatch) {
-      return res.status(41).json({
+      console.log("Mots de passe ne correspondent pas pour:", email);
+      return res.status(401).json({
         message: 'Identifiants incorrects',
       });
     }
 
+    console.log("Connexion réussie pour:", email);
     // GÉNÉRER LE TOKEN JWT
-    // Expire en secondes
     const expireValeur = process.env.JWT_EXPIRES_IN || '3600';
     const expire = parseInt(expireValeur, 10);
     const token = jwt.sign(
@@ -96,10 +104,9 @@ const login = async (req, res) => {
       { expiresIn: expire },
     );
 
-    // On place le token dans un cookie HttpOnly
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false, // mettre sur vrai pour mise en ligne
+      secure: false,
       sameSite: 'none',
       maxAge: expire * 1000,
     });
@@ -114,9 +121,10 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Erreur de connexion utilisateur', error.message);
+    console.error('--- ERREUR 500 DÉTECTÉE LORS DE LA CONNEXION ---');
+    console.error('Erreur détaillée:', error); // Affiche l'erreur complète de bcrypt
     res.status(500).json({
-      message: 'Erreur lors de la connexion',
+      message: 'Erreur interne du serveur lors de la connexion.',
     });
   }
 };

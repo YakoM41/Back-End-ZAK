@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require("../db");
 
 const sql = `
   SELECT * FROM participer 
@@ -12,7 +12,7 @@ const sql = `
 
 const isProjectManager = async (userId, projectId) => {
   // On utilise la variable 'sql' définie plus haut qui contient le JOIN
-  const [rows] = await db.query(sql, [userId, projectId, 'Chef de projet']);
+  const [rows] = await db.query(sql, [userId, projectId, "Chef de projet"]);
 
   return rows.length > 0;
 };

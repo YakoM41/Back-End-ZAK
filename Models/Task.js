@@ -79,10 +79,28 @@ const delTask = async (id) => {
   return result;
 };
 
+// Mettre à jour uniquement le statut d'une tâche
+const updateTaskStatusInDB = async (taskId, status) => {
+  // On recherche l'ID de la colonne qui correspond au statut
+  const [col] = await db.query("SELECT id_col FROM colonnes WHERE col_name = ?", [status]);
+
+  if (col.length === 0) {
+    throw new Error(`Le statut '${status}' ne correspond à aucune colonne.`);
+  }
+  const newColId = col[0].id_col;
+
+  const [result] = await db.query(
+    "UPDATE taches SET id_col = ? WHERE id_task = ?",
+    [newColId, taskId]
+  );
+  return result;
+};
+
 module.exports = {
   getAllTasks,
   getTaskByID,
   createTask,
   updateTask,
   delTask,
+  updateTaskStatusInDB,
 };

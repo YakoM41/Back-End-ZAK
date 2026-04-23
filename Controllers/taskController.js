@@ -1,11 +1,14 @@
 // CONTROLLER PRODUITS
-const { getAllTasks, getTaskByID } = require('../Models/Task');
-const { isProjectManager } = require('../Models/Role');
+const {
+  getAllTasks,
+  getTaskByID,
+  createTask,
+  updateTaskStatusInDB,
+} = require("../Models/Task");
+const { isProjectManager } = require("../Models/Role");
 
 // LE MODÈLE ENVOIE DES DONNEES ICI ET LE CONTROLLER LES ENVOIENT A L'UTILISATEUR
 // Créer une tâche
-const { createTask } = require('../Models/Task');
-
 const create = async (req, res) => {
   // On extrait les données
   const {
@@ -24,7 +27,7 @@ const create = async (req, res) => {
     if (!title || !col_id || !project_id) {
       return res.status(400).json({
         message:
-          'Erreur : Le titre, la colonne et le projet sont obligatoires.',
+          "Erreur : Le titre, la colonne et le projet sont obligatoires.",
       });
     }
 
@@ -33,7 +36,7 @@ const create = async (req, res) => {
     if (!isManager) {
       return res.status(403).json({
         message:
-          'Accès refusé : Seul le chef de projet peut ajouter une tâche.',
+          "Accès refusé : Seul le chef de projet peut ajouter une tâche.",
       });
     }
 
@@ -50,7 +53,7 @@ const create = async (req, res) => {
     });
     if (result.affectedRows > 0) {
       res.status(201).json({
-        message: ' Votre tâche a bien été créée ',
+        message: " Votre tâche a bien été créée ",
         id_task: result.insertId,
         task: {
           title,
@@ -80,14 +83,14 @@ const getAll = async (req, res) => {
   try {
     const tasks = await getAllTasks();
     res.json({
-      message: 'Produits récupérer avec succès',
+      message: "Produits récupérer avec succès",
       count: tasks.length,
       tasks,
     });
   } catch (error) {
-    console.error('Erreur de récupération des tâches', error.message);
+    console.error("Erreur de récupération des tâches", error.message);
     res.status(500).json({
-      message: 'Erreur de récupération des tâches',
+      message: "Erreur de récupération des tâches",
     });
   }
 };
@@ -100,19 +103,45 @@ const getByID = async (req, res) => {
     const tasks = await getTaskByID(taskId);
     if (tasks.length === 0) {
       return res.status(404).json({
-        message: 'Tâche non trouvée',
+        message: "Tâche non trouvée",
       });
     }
     res.json({
-      message: 'Tâche récupérée avec succès',
+      message: "Tâche récupérée avec succès",
       task: tasks[0],
     });
   } catch (error) {
-    console.error('Erreur de récupération de la tâche', error.message);
+    console.error("Erreur de récupération de la tâche", error.message);
     res.status(500).json({
-      message: 'Erreur de récupération de la tâche',
+      message: "Erreur de récupération de la tâche",
     });
   }
 };
 
-module.exports = { getAll, getByID, create };
+// Mettre à jour le statut d'une tâche
+const updateTaskStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const taskId = parseInt(id);
+
+    if (!status) {
+      return res.status(400).json({ message: "Le statut est requis." });
+    }
+
+    const result = await updateTaskStatusInDB(taskId, status);
+
+    if (result.affectedRows > 0) {
+      res.json({ message: "Statut de la tâche mis à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Tâche non trouvée ou statut non modifié." });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du statut de la tâche", error.message);
+    res.status(500).json({
+      message: "Erreur lors de la mise à jour du statut de la tâche",
+    });
+  }
+};
+
+module.exports = { getAll, getByID, create, updateTaskStatus };
